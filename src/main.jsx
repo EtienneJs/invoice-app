@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { InvoiceApp } from './component/InvoiceApp';
+import { InvoiceApp } from './InvoiceApp';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

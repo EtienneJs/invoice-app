@@ -29,7 +29,7 @@ export const invoice = {
         {
             product:'Asus XP',
             price:111,
-            quantity:2
+            quantity:3
         }
     ]
 }
