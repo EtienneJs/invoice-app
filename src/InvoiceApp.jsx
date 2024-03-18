@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getInvoice } from "./services/getInvoice";
+import { getInvoice, useItems } from "./services/getInvoice";
 import { InvoiceView } from "./component/InvoiceView";
 import { ClientView } from "./component/ClientView";
 import { CompanyView } from "./component/CompanyView";
@@ -7,12 +7,15 @@ import { ProductView } from "./component/ProductView";
 import { TotalView } from "./component/TotalView";
 
 export const InvoiceApp = () => {
-  const { id, name, client, company, items:itemsInitials,total } = getInvoice();
+  const { id, name, client, company } = getInvoice();
   const [productValue,setProductValue] = useState('');
-  const [priceValue,setPiceValue] = useState(0);
+  const [priceValue,setPriceValue] = useState(0);
   const [quantityValue,setQuantityValue] = useState(0);
-
-  const [items, setItems] = useState(itemsInitials);
+  const {items,handleItems, total,handleDeleteItems} = useItems();
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    handleItems({ productValue, priceValue, quantityValue });
+  }
 
   return (
     <div className="container">
@@ -28,14 +31,11 @@ export const InvoiceApp = () => {
              <CompanyView company={company} title="Datos de la Empresa"/>
             </div>
           </div>
-          <ProductView items={items} title="Productos de la factura" />
+          <ProductView items={items} title="Productos de la factura" remove={handleDeleteItems}/>
           <TotalView total={total}/>
-          <form className="w-50" onSubmit={(e)=> {
-            e.preventDefault();
-            setItems([...items, {price: priceValue,product:parseInt(productValue,10),quantity:parseInt(quantityValue,10)}])
-          }}>
+          <form className="w-50" onSubmit={(e)=> handleSubmit(e)}>
             <input type="text"  name="product" placeholder="Producto" className="form-control m-3" onChange={e=> setProductValue(e.target.value)}/>
-            <input type="text"  name="price" placeholder="Precio" className="form-control m-3" onChange={e=> setPiceValue(e.target.value)}/>
+            <input type="text"  name="price" placeholder="Precio" className="form-control m-3" onChange={e=> setPriceValue(e.target.value)}/>
             <input type="text"  name="quantity" placeholder="Cantidad" className="form-control m-3" onChange={e=> setQuantityValue(e.target.value)}/>
             <button type="submit" className="btn btn-primary m-3">Crear Item</button>
           </form>
