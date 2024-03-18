@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import { useInvoiceContext } from "../context/InvoiceContext";
 
-export const RowProduct = ({ item, id, remove,funcindex }) => {
+export const RowProduct = ({ item, id,setFormData }) => {
+  const {handleDeleteItems,setIndex} = useInvoiceContext();
   const { product, price, quantity } = item;  
   return (
     <>
@@ -9,15 +11,13 @@ export const RowProduct = ({ item, id, remove,funcindex }) => {
         <td>{product}</td>
         <td>{price}</td>
         <td>{quantity}</td>
-        <td><button className="btn btn-danger" onClick={()=>remove(id)}> Borrar </button></td>
-        <td><button className="btn btn-info" onClick={()=>funcindex(id)}> update </button></td>
+        <td><button className="btn btn-danger" onClick={()=>handleDeleteItems(id)}> Borrar </button></td>
+        <td><button className="btn btn-info" onClick={()=>{setIndex(id); setFormData({productValue:product,priceValue:price,quantityValue:quantity})}}> update </button></td>
       </tr>
     </>
   );
 };
 RowProduct.propTypes = {
     item: PropTypes.object.isRequired,
-    id: PropTypes.number.isRequired,
-    funcindex:PropTypes.func.isRequired,
-    remove: PropTypes.func.isRequired
+    id: PropTypes.number.isRequired
 }

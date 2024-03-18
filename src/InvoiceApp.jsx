@@ -1,26 +1,28 @@
 import React, { useState } from "react";
-import { getInvoice, useItems } from "./services/getInvoice";
+import { getInvoice } from "./services/getInvoice";
 import { InvoiceView } from "./component/InvoiceView";
 import { ClientView } from "./component/ClientView";
 import { CompanyView } from "./component/CompanyView";
 import { ProductView } from "./component/ProductView";
 import { TotalView } from "./component/TotalView";
+import { useInvoiceContext } from "./context/InvoiceContext";
 
 export const InvoiceApp = () => {
+  const initialFormData = {
+    productValue:'',priceValue:'', quantityValue:''
+  };
   const { id, name, client, company } = getInvoice();
-  const [ index, setIndex ] = useState(-1);
-  const [productValue,setProductValue] = useState('');
-  const [priceValue,setPriceValue] = useState(0);
-  const [quantityValue,setQuantityValue] = useState(0);
-  const {items,handleItems, total,handleDeleteItems,modifyItem} = useItems();
+  const [formData, setFormData] = useState(initialFormData);
+  const {items,handleItems, total,modifyItem,index,setIndex} = useInvoiceContext();
   const handleSubmit = (e) =>{
     e.preventDefault();
-    if(index){
-      modifyItem(index,{ productValue, priceValue, quantityValue });
+    if(index != -1){
+      modifyItem(index,formData);
       setIndex(-1);
     } else {
-      handleItems({ productValue, priceValue, quantityValue });
+      handleItems(formData);
     }
+    setFormData(initialFormData)
   }
 
   return (
@@ -37,7 +39,7 @@ export const InvoiceApp = () => {
              <CompanyView company={company} title="Datos de la Empresa"/>
             </div>
           </div>
-          <ProductView items={items} title="Productos de la factura" remove={handleDeleteItems} funcindex={setIndex}/>
+          <ProductView items={items} title="Productos de la factura" setFormData={setFormData}/>
           <TotalView total={total}/>
           <form className="w-50" onSubmit={(e)=> handleSubmit(e)}>
             {
@@ -45,10 +47,10 @@ export const InvoiceApp = () => {
                 <input type="text"  name="index" placeholder="index" className="form-control m-3" value={index} readOnly/>    
               )
             }
-            <input type="text"  name="product" placeholder="Producto" className="form-control m-3" onChange={e=> setProductValue(e.target.value)}/>
-            <input type="text"  name="price" placeholder="Precio" className="form-control m-3" onChange={e=> setPriceValue(e.target.value)}/>
-            <input type="text"  name="quantity" placeholder="Cantidad" className="form-control m-3" onChange={e=> setQuantityValue(e.target.value)}/>
-            <button type="submit" className="btn btn-primary m-3">Crear Item</button>
+            <input type="text" value={formData.productValue}  name="product" placeholder="Producto" className="form-control m-3" onChange={e=> setFormData({...formData,productValue:e.target.value})}/>
+            <input type="text"  value={formData.priceValue} name="price" placeholder="Precio" className="form-control m-3" onChange={e=> setFormData({...formData,priceValue:e.target.value})}/>
+            <input type="text"  value={formData.quantityValue} name="quantity" placeholder="Cantidad" className="form-control m-3" onChange={e=> setFormData({...formData,quantityValue:e.target.value})}/>
+            <button type="submit" className="btn btn-primary m-3">{index == -1 ? 'Crear Item' : 'Modificar'}</button>
           </form>
         </div>
       </div>
