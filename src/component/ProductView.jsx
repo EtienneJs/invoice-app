@@ -3,7 +3,7 @@ import { RowProduct } from './RowProduct'
 import PropTypes from 'prop-types';
 
 
-export const ProductView = ({items, title,remove}) => {
+export const ProductView = ({items, title,remove,funcindex}) => {
   return (
     <>
          <h3> {title} </h3>
@@ -18,7 +18,7 @@ export const ProductView = ({items, title,remove}) => {
             </thead>
             <tbody>
               {items.map((item, index) => (
-                    <RowProduct item={item} key={index} id={index} remove={remove}/>
+                    <RowProduct item={item} key={index} id={index} remove={remove} funcindex={funcindex}/>
               ))}
             </tbody>
           </table>
@@ -28,5 +28,6 @@ export const ProductView = ({items, title,remove}) => {
 ProductView.propTypes = {
     items: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
-    remove: PropTypes.func.isRequired
+    remove: PropTypes.func.isRequired,
+    funcindex:PropTypes.func.isRequired
 }

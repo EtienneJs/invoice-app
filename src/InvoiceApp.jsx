@@ -8,13 +8,19 @@ import { TotalView } from "./component/TotalView";
 
 export const InvoiceApp = () => {
   const { id, name, client, company } = getInvoice();
+  const [ index, setIndex ] = useState(-1);
   const [productValue,setProductValue] = useState('');
   const [priceValue,setPriceValue] = useState(0);
   const [quantityValue,setQuantityValue] = useState(0);
-  const {items,handleItems, total,handleDeleteItems} = useItems();
+  const {items,handleItems, total,handleDeleteItems,modifyItem} = useItems();
   const handleSubmit = (e) =>{
     e.preventDefault();
-    handleItems({ productValue, priceValue, quantityValue });
+    if(index){
+      modifyItem(index,{ productValue, priceValue, quantityValue });
+      setIndex(-1);
+    } else {
+      handleItems({ productValue, priceValue, quantityValue });
+    }
   }
 
   return (
@@ -31,9 +37,14 @@ export const InvoiceApp = () => {
              <CompanyView company={company} title="Datos de la Empresa"/>
             </div>
           </div>
-          <ProductView items={items} title="Productos de la factura" remove={handleDeleteItems}/>
+          <ProductView items={items} title="Productos de la factura" remove={handleDeleteItems} funcindex={setIndex}/>
           <TotalView total={total}/>
           <form className="w-50" onSubmit={(e)=> handleSubmit(e)}>
+            {
+              (index != -1) && (
+                <input type="text"  name="index" placeholder="index" className="form-control m-3" value={index} readOnly/>    
+              )
+            }
             <input type="text"  name="product" placeholder="Producto" className="form-control m-3" onChange={e=> setProductValue(e.target.value)}/>
             <input type="text"  name="price" placeholder="Precio" className="form-control m-3" onChange={e=> setPriceValue(e.target.value)}/>
             <input type="text"  name="quantity" placeholder="Cantidad" className="form-control m-3" onChange={e=> setQuantityValue(e.target.value)}/>

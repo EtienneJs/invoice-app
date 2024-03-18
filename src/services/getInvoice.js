@@ -21,9 +21,13 @@ export const useItems = () =>{
         
     }
     
-    const handleDeleteItems = (indexItem) =>{
-        const newItems = items.filter((_, index) => index !=  indexItem)
+    const handleDeleteItems = (indexItem, {}) =>{
+        const existIndex = items.findIndex((_) => _.product ==  productValue)
         setItems([...newItems]);
+    }
+    const modifyItem = (indexItem,{priceValue,productValue, quantityValue}) =>{
+        item[indexItem] = { product:productValue,price:parseInt(priceValue,10), quantity:parseInt(quantityValue,10)};
+        setItems([...items]);
     }
     useEffect(()=>{
         setTotal(items.map(item => item.price * item.quantity).reduce((acc,current)=> acc + current,0))
@@ -34,6 +38,7 @@ export const useItems = () =>{
         items,
         setItems,
         handleItems,
-        handleDeleteItems
+        handleDeleteItems,
+        modifyItem
     }
 }
